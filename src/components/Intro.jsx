@@ -10,17 +10,14 @@ const Intro = () => {
     <div className="intro">
       <div>
         <h1>
-          Take Control of <span className="accent">Your Money</span>
+          <span className="accent">Keep track of your personal budgets!</span>
         </h1>
-        <p>
-          Keep track of your personal budgets!
-        </p>
         <Form method="post">
           <input
             type="text"
             name="userName"
             required
-            placeholder="What is your name?" aria-label="Your Name" autoComplete="given-name"
+            placeholder="Enter your name" aria-label="Your Name" autoComplete="given-name"
           />
           <input type="hidden" name="_action" value="newUser" />
           <button type="submit" className="btn btn--dark">

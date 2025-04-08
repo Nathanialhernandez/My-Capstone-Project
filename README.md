@@ -4,3 +4,12 @@
 #    I found myself constantly adding everything up which can take some time. This app is designed to make this
 #     process easier. This is my submission for my final project for CSC 489.
 #
+
+
+
+# To update amplify
+# git add .
+# git commit -m 'changes for amplify'
+# git push origin main
+#
+#
