@@ -1,29 +1,28 @@
-// rrd imports
-import { Outlet, useLoaderData } from "react-router-dom";
+// component import
+import ExpenseItem from "./ExpenseItem";
 
-// components
-import Nav from "../components/Nav";
-
-//  helper functions
-import { fetchData } from "../helpers"
-
-// loader
-export function mainLoader() {
-  const userName = fetchData("userName");
-  return { userName }
-}
-
-const Main = () => {
-  const { userName } = useLoaderData()
-
+const Table = ({ expenses, showBudget = true }) => {
   return (
-    <div className="layout">
-      <Nav userName={userName} />
-      <main>
-        <Outlet />
-      </main>
-      
+    <div className="table">
+      <table>
+        <thead>
+          <tr>
+            {["Name", "Amount", "Date", showBudget ? "Budget" : "", ""].map(
+              (i, index) => (
+                <th key={index}>{i}</th>
+              )
+            )}
+          </tr>
+        </thead>
+        <tbody>
+          {expenses.map((expense) => (
+            <tr key={expense.id}>
+              <ExpenseItem expense={expense} showBudget={showBudget} />
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
-  )
-}
-export default Main
+  );
+};
+export default Table;
