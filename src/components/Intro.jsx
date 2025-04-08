@@ -1,8 +1,7 @@
 import { Form } from "react-router-dom"
 
 // library
-
-
+import { UserPlusIcon } from "@heroicons/react/24/solid";
 // assets
 
 
@@ -14,7 +13,7 @@ const Intro = () => {
           Take Control of <span className="accent">Your Money</span>
         </h1>
         <p>
-          Personal budgeting is the secret to financial freedom. Start your journey today.
+          Keep track of your personal budgets!
         </p>
         <Form method="post">
           <input

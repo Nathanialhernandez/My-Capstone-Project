@@ -1,95 +1,68 @@
-// react imports
-import { useEffect, useRef } from "react"
-
 // rrd imports
-import { useFetcher } from "react-router-dom"
+import { Form, Link } from "react-router-dom";
 
 // library imports
-import { PlusCircleIcon } from "@heroicons/react/24/solid"
+import { BanknotesIcon, TrashIcon } from "@heroicons/react/24/outline";
 
-const AddExpenseForm = ({ budgets }) => {
-  const fetcher = useFetcher()
-  const isSubmitting = fetcher.state === "submitting";
+// helper functions
+import {
+  calculateSpentByBudget,
+  formatCurrency,
+  formatPercentage,
+} from "../helpers";
 
-  const formRef = useRef()
-  const focusRef = useRef()
-
-  useEffect(() => {
-    if (!isSubmitting) {
-      // clear form
-      formRef.current.reset()
-      // reset focus
-      focusRef.current.focus()
-    }
-
-  }, [isSubmitting])
+const BudgetItem = ({ budget, showDelete = false }) => {
+  const { id, name, amount, color } = budget;
+  const spent = calculateSpentByBudget(id);
 
   return (
-    <div className="form-wrapper">
-      <h2 className="h3">Add New{" "}<span className="accent">
-        {budgets.length === 1 && `${budgets.map((budg) => budg.name)}`}
-      </span>{" "}
-        Expense
-      </h2>
-      <fetcher.Form
-        method="post"
-        className="grid-sm"
-        ref={formRef}
-      >
-        <div className="expense-inputs">
-          <div className="grid-xs">
-            <label htmlFor="newExpense">Expense Name</label>
-            <input
-              type="text"
-              name="newExpense"
-              id="newExpense"
-              placeholder="e.g., Coffee"
-              ref={focusRef}
-              required
-            />
-          </div>
-          <div className="grid-xs">
-            <label htmlFor="newExpenseAmount">Amount</label>
-            <input
-              type="number"
-              step="0.01"
-              inputMode="decimal"
-              name="newExpenseAmount"
-              id="newExpenseAmount"
-              placeholder="e.g., 3.50"
-              required
-            />
-          </div>
+    <div
+      className="budget"
+      style={{
+        "--accent": color,
+      }}
+    >
+      <div className="progress-text">
+        <h3>{name}</h3>
+        <p>{formatCurrency(amount)} Budgeted</p>
+      </div>
+      <progress max={amount} value={spent}>
+        {formatPercentage(spent / amount)}
+      </progress>
+      <div className="progress-text">
+        <small>{formatCurrency(spent)} spent</small>
+        <small>{formatCurrency(amount - spent)} remaining</small>
+      </div>
+      {showDelete ? (
+        <div className="flex-sm">
+          <Form
+            method="post"
+            action="delete"
+            onSubmit={(event) => {
+              if (
+                !confirm(
+                  "Are you sure you want to permanently delete this budget?"
+                )
+              ) {
+                event.preventDefault();
+              }
+            }}
+          >
+            <button type="submit" className="btn">
+              <span>Delete Budget</span>
+              <TrashIcon width={20} />
+            </button>
+          </Form>
         </div>
-        <div className="grid-xs" hidden={budgets.length === 1}>
-          <label htmlFor="newExpenseBudget">Budget Category</label>
-          <select name="newExpenseBudget" id="newExpenseBudget" required>
-            {
-              budgets
-                .sort((a, b) => a.createdAt - b.createdAt)
-                .map((budget) => {
-                  return (
-                    <option key={budget.id} value={budget.id}>
-                      {budget.name}
-                    </option>
-                  )
-                })
-            }
-          </select>
+      ) : (
+        <div className="flex-sm">
+          <Link to={`/budget/${id}`} className="btn">
+            <span>View Details</span>
+            <BanknotesIcon width={20} />
+          </Link>
         </div>
-        <input type="hidden" name="_action" value="createExpense" />
-        <button type="submit" className="btn btn--dark" disabled={isSubmitting}>
-          {
-            isSubmitting ? <span>Submitting…</span> : (
-              <>
-                <span>Add Expense</span>
-                <PlusCircleIcon width={20} />
-              </>
-            )
-          }
-        </button>
-      </fetcher.Form>
+      )}
     </div>
-  )
-}
-export default AddExpenseForm
+  );
+};
+export default BudgetItem;
